@@ -1,11 +1,13 @@
 const sqlite3 = require('../modules/DbConnection');
 const db = sqlite3().getInstance;
 
-console.log(db);
-
 const users = [
-    {name: "Oleh", email: "zloyleva@gmail.com", password: "123456", avatar: null, token: null},
     {name: "Alena", email: "alena@gmail.com", password: "123456", avatar: null, token: null},
+	{name: "Oleh", email: "zloyleva@gmail.com", password: "123456", avatar: "",token: null},
+	{name: "John", email: "john@gmail.com", password: "123456", avatar: "",token: null},
+	{name: "Alena", email: "alena@gmail.com", password: "123456", avatar: "",token: null},
+	{name: "Ivan", email: "ivan@gmail.com", password: "123456", avatar: "",token: null},
+	{name: "Lesya", email: "lesya@gmail.com", password: "123456", avatar: "",token: null},
 ];
 
 db.serialize(function () {

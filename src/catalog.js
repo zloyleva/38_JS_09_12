@@ -1,6 +1,6 @@
 import {Builder} from "./builder";
 import {Data} from "./data";
-import {PageData} from "./page_data";
+import {Config} from "./config";
 import {Pagination} from "./pagination"
 
 export class Catalog{
@@ -12,12 +12,12 @@ export class Catalog{
 	createCard(product, index){
 		let link = Builder.createNewElement("a", "Add to cart", "btn btn-primary",[{"name":"href", "value":"#"}]);
 		let show_more = Builder.createNewElement("a", "More", "btn btn-success product_more",[{"name":"href", "value":"#"}, {"name":"data-id", "value":index}]);
-		let p = Builder.createNewElement("p", product.description, "card-text");
+		let p = Builder.createNewElement("p", product.description.split(" ").slice(0,10).join(" ") + "...", "card-text");
 		let title = Builder.createNewElement("h5", product.name, "card-title");
 	
 		let cardBody = Builder.attachChilderToParent(Builder.createNewElement("div", null, "card-body"), [title,p,link,show_more]);
 	
-		let image = Builder.createNewElement("img", null, "card-img-top", [{"name":"src", "value":"images/"+product.image},{"name":"alt", "value":product.name}]);
+		let image = Builder.createNewElement("img", null, "card-img-top", [{"name":"src", "value":product.image},{"name":"alt", "value":product.name}]);
 	
 		let card = Builder.attachChilderToParent(Builder.createNewElement("div", null, "card"), [image,cardBody]);
 	
@@ -41,6 +41,6 @@ export class Catalog{
 			this.element.appendChild(this.createCard(array_products[i],i));
 		}
 		const pagination = new Pagination(this.per_page);
-		pagination.createPagination(Data.getProducts(), PageData.getCurrentPage());
+		pagination.createPagination(Data.getProducts(), Config.getCurrentPage());
 	}
 }

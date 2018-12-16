@@ -1,19 +1,22 @@
 import {Builder} from "./builder";
 
 export class Navigation {
-    constructor(id){
+    constructor(id,event){
         this.element = document.getElementById(id);
+        this.event = event;
     }
 
     createHtmlElement(isLogin){
 
-        const brandLink = Builder.createNewElement("a", "E-Store", "navbar-brand",[{name:"href", value:"/"}]);
+        const brandLink = Builder.createNewElement("a", "E-Store", "navbar-brand router-spa",[{name:"href", value:""}]);
         const spanToggler = Builder.createNewElement("span", null, "navbar-toggler-icon");
         const buttonToggler = Builder.attachChilderToParent(Builder.createNewElement("button", null, "navbar-toggler", [{name:"id", value:"buttonToggler"}]), [spanToggler]);
 
         const menuList = [
-            {title:"Home", link: "#"},
-            {title:"Link", link: "#"},
+            {title:"Home", link: "home"},
+            {title:"Catalog", link: "catalog"},
+            {title:"Cart", link: "cart"},
+            {title:"Orders", link: "orders"},
         ];
 
         if(isLogin){
@@ -21,7 +24,7 @@ export class Navigation {
         }
 
         const liList = menuList.map(el => {
-            const a = Builder.createNewElement("a", el.title, "navbar-brand",[{name:"href", value:el.link}]);
+            const a = Builder.createNewElement("a", el.title, "nav-link router-spa",[{name:"href", value:el.link}]);
             return Builder.attachChilderToParent(Builder.createNewElement("li", null, "nav-item"), [a]);
         });
 
@@ -36,6 +39,17 @@ export class Navigation {
 
         document.getElementById("buttonToggler").addEventListener("click", (e) => {
             document.getElementById("navbarCollapse").classList.toggle("show")
-        })
+        });
+
+        Array.from(document.getElementsByClassName("router-spa")).map(el => {
+            el.addEventListener("click", (e) => {
+                console.log();
+                e.preventDefault();
+                window.history.pushState({page: e.target.getAttribute("href")}, e.target.getAttribute("href"), `/${e.target.getAttribute("href")}`);
+
+            //    FIRE!!!!!!!! <---
+            window.dispatchEvent(this.event);
+            });
+        });
     }
 }

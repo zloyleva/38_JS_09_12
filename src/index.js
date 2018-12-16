@@ -1,5 +1,5 @@
 import {Data} from "./data";
-import {PageData} from "./page_data";
+import {Config} from "./config";
 import {Catalog} from "./catalog";
 import {Pagination} from "./pagination"
 import {Login} from "./login"
@@ -9,13 +9,29 @@ import {Navigation} from "./navigation"
 
 const isLogin = localStorage.getItem("isLogin");
 
-new Navigation("pageNav").renderHtmlElement(isLogin);
+const event = new Event("changePage");
+
+new Navigation("pageNav",event).renderHtmlElement(isLogin);
 new PageTitle("pageTitle").renderHtmlElement(isLogin);
+
+
+
+window.onpopstate = function (e) {
+    console.log("location.pathname",location.pathname);
+};
+//LISTENER ->
+window.addEventListener("changePage", (e)=>{
+    console.log("changePage",location.pathname);
+
+
+
+}, false);
 
 
 switch (location.hash) {
 	case "#logout":
         localStorage.removeItem("isLogin");
+        localStorage.removeItem("token");
         location = location.origin;
 	case "#cart":
         console.log(location.hash);
@@ -23,8 +39,13 @@ switch (location.hash) {
         if(isLogin){
             const per_page = 6;
 
-            new Catalog(per_page).renderProducts(Data.setProducts(Data.loadProducts()), PageData.getCurrentPage());
-            new Pagination(per_page).createPagination(Data.getProducts(), PageData.getCurrentPage());
+            Data.loadProducts()
+                .then(res => {
+                    console.log(res);
+                    new Catalog(per_page).renderProducts(Data.setProducts(res.data), Config.getCurrentPage());
+                    new Pagination(per_page).createPagination(Data.getProducts(), Config.getCurrentPage());
+                }); // Todo add catch
+
         }else{
             new Login().createHtmlElement();
         }

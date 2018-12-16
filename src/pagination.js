@@ -1,5 +1,5 @@
 import {Builder} from "./builder";
-import {PageData} from "./page_data";
+import {Config} from "./config";
 import {Data} from "./data";
 import {Catalog} from "./catalog";
 
@@ -27,8 +27,13 @@ export class Pagination{
 
 		Array.from(this.pagination_buttons).map((el)=>{
 			el.addEventListener("click", (e)=>{
-				PageData.setCurrentPage(e.target.dataset.link);
-				catalog.renderProducts(Data.setProducts(Data.loadProducts()), PageData.getCurrentPage());
+				Config.setCurrentPage(e.target.dataset.link);
+
+                Data.loadProducts()
+                    .then(res => {
+                        console.log(res);
+                        catalog.renderProducts(Data.setProducts(res.data), Config.getCurrentPage());
+                    }); // Todo add catch
 			});
 		});
 	

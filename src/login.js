@@ -1,4 +1,5 @@
 import {Builder} from "./builder";
+import {Config} from "./config";
 
 export class Login{
 	constructor(per_page){
@@ -41,13 +42,31 @@ export class Login{
         console.log("submit");
 		// console.log(e.target[0].value);
 		// console.log(e.target[1].value);
-		//
+
 		// console.log(/[a-zA-Z]{2,12}/.test(e.target[0].value));
 
+		const headers = new Headers({
+			"Content-Type": "application/json"
+		});
 
-		// Validation
-
-		localStorage.setItem("isLogin", true);
-		location = location.origin;
+		fetch(`${Config.getServerUrl()}/login`,{
+            headers: headers,
+			method: "POST",
+			body: JSON.stringify({
+				email: e.target[0].value,
+                password: e.target[1].value,
+            })
+		})
+			.then(res => res.json())
+			.then(res => {
+                console.log(res);
+                if(res.status == "isLogin"){
+                    localStorage.setItem("isLogin", true);
+                    localStorage.setItem("token", res.token);
+                    location = location.origin;
+				}else{
+					//Todo wrong data
+				}
+			});
 	}
 }
